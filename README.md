@@ -8,13 +8,29 @@ Student productivity and collaboration platform for academic planning, study gro
 - Backend: Spring Boot + Spring AI + PostgreSQL
 - AI service: Python + FastAPI
 
+## Environment Setup
+
+Best practice used in this repo:
+
+- commit `.env.example`
+- keep real `.env` files out of git
+- use environment variables for backend secrets
+- use `VITE_` variables only for frontend public config
+
+Example files included:
+
+- [frontend/.env.example](C:\XboxGames\GameSave\student-reel-platform\frontend\.env.example)
+- [backend/.env.example](C:\XboxGames\GameSave\student-reel-platform\backend\.env.example)
+- [pyAi/.env.example](C:\XboxGames\GameSave\student-reel-platform\pyAi\.env.example)
+
 ## Current scaffold
 
 - Lightweight register/login flow with user-aware dashboard state
 - Student dashboard with planner, analytics, study groups, and reels UI
 - Spring Boot APIs for dashboard data and Groq-backed chat
-- Python AI endpoints for study-plan generation and summarization
+- Python AI endpoints for study-plan generation, summarization, and reel quizzes
 - Spring Boot proxy endpoints to the Python AI service
+- Reel metadata creation and revision-save flow
 
 ## Suggested next build order
 
@@ -22,7 +38,7 @@ Student productivity and collaboration platform for academic planning, study gro
 2. Replace sample dashboard data with JPA entities and repositories
 3. Add task CRUD, reminders, and calendar scheduling
 4. Persist study groups, sessions, and shared notes
-5. Add reel upload, transcript, quiz, and save-for-revision flows
+5. Add binary reel uploads and managed media storage
 6. Connect analytics to real progress and focus-session data
 
 ## Local run order
@@ -41,10 +57,13 @@ uvicorn app.main:app --reload --port 8000
 
 ```powershell
 cd C:\XboxGames\GameSave\student-reel-platform\backend
+$env:DB_URL="jdbc:postgresql://localhost:5432/student_reel"
+$env:DB_USERNAME="postgres"
+$env:DB_PASSWORD="your_postgres_password"
 $env:GROQ_API_KEY="your-groq-key"
 $env:GROQ_MODEL="llama-3.3-70b-versatile"
 $env:PYTHON_AI_URL="http://localhost:8000"
-mvn spring-boot:run
+.\start-backend.ps1
 ```
 
 Seeded login after first boot:
@@ -59,3 +78,14 @@ cd C:\XboxGames\GameSave\student-reel-platform\frontend
 npm install
 npm run dev
 ```
+
+Frontend local config:
+
+```env
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+Deployment rule:
+
+- frontend public config goes in frontend env variables
+- backend and AI secrets should be set in the deployment platform, not committed to the repo
