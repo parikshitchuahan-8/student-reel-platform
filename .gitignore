@@ -1,0 +1,7 @@
+.idea/
+backend/target/
+frontend/node_modules/
+frontend/dist/
+pyAi/.venv/
+pyAi/app/__pycache__/
+*.log
