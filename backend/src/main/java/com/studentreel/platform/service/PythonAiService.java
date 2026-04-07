@@ -1,5 +1,6 @@
 package com.studentreel.platform.service;
 
+import com.studentreel.platform.dto.ReelQuizRequest;
 import com.studentreel.platform.dto.StudyPlanRequest;
 import com.studentreel.platform.dto.SummaryRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,19 @@ public class PythonAiService {
 
         return restClient.post()
                 .uri("/ai/summarize")
+                .body(payload)
+                .retrieve()
+                .body(Map.class);
+    }
+
+    public Map<String, Object> generateReelQuiz(ReelQuizRequest request) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("title", request.title());
+        payload.put("subject", request.subject());
+        payload.put("takeaway", request.takeaway());
+
+        return restClient.post()
+                .uri("/ai/reel-quiz")
                 .body(payload)
                 .retrieve()
                 .body(Map.class);
