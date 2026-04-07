@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "saved_reels")
 public class SavedReel {
@@ -25,12 +27,17 @@ public class SavedReel {
     @JoinColumn(name = "reel_id", nullable = false)
     private StudyReel reel;
 
+    private LocalDate nextReviewDate;
+    private boolean reminderEnabled;
+
     protected SavedReel() {
     }
 
     public SavedReel(UserProfile user, StudyReel reel) {
         this.user = user;
         this.reel = reel;
+        this.nextReviewDate = LocalDate.now().plusDays(1);
+        this.reminderEnabled = true;
     }
 
     public Long getId() {
@@ -43,5 +50,21 @@ public class SavedReel {
 
     public StudyReel getReel() {
         return reel;
+    }
+
+    public LocalDate getNextReviewDate() {
+        return nextReviewDate;
+    }
+
+    public void setNextReviewDate(LocalDate nextReviewDate) {
+        this.nextReviewDate = nextReviewDate;
+    }
+
+    public boolean isReminderEnabled() {
+        return reminderEnabled;
+    }
+
+    public void setReminderEnabled(boolean reminderEnabled) {
+        this.reminderEnabled = reminderEnabled;
     }
 }
