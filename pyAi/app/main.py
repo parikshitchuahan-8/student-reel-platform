@@ -21,6 +21,12 @@ class SummaryRequest(BaseModel):
     content: str = Field(..., min_length=20)
 
 
+class ReelQuizRequest(BaseModel):
+    title: str
+    subject: str
+    takeaway: str
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
@@ -69,4 +75,45 @@ def summarize_content(payload: SummaryRequest) -> dict:
         "summary": summary,
         "quiz_prompt": f"What are the three most important takeaways from {payload.title}?",
         "revision_action": "Save this summary and revisit it in 48 hours.",
+    }
+
+
+@app.post("/ai/reel-quiz")
+def generate_reel_quiz(payload: ReelQuizRequest) -> dict:
+    base = f"{payload.subject}: {payload.takeaway}"
+    return {
+        "title": payload.title,
+        "subject": payload.subject,
+        "questions": [
+            {
+                "question": f"What is the main idea emphasized in '{payload.title}'?",
+                "options": [
+                    payload.takeaway,
+                    "Ignoring revision scheduling",
+                    "Replacing practice with passive watching",
+                    "Avoiding concept review",
+                ],
+                "answer": payload.takeaway,
+            },
+            {
+                "question": f"Which topic area does this reel mainly support?",
+                "options": [
+                    payload.subject,
+                    "General social media trends",
+                    "Unrelated entertainment",
+                    "Random memorization only",
+                ],
+                "answer": payload.subject,
+            },
+            {
+                "question": "What is the best next action after watching the reel?",
+                "options": [
+                    f"Use the key takeaway in active recall: {base}",
+                    "Skip practice and move on",
+                    "Delete your notes",
+                    "Ignore the topic for a week",
+                ],
+                "answer": f"Use the key takeaway in active recall: {base}",
+            },
+        ],
     }
