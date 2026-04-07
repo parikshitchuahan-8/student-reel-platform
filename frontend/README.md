@@ -10,6 +10,12 @@ React + Tailwind frontend for the student productivity platform.
 - AI study-plan generation wired to the Spring Boot to Python AI flow
 - Task manager connected to Spring Boot task CRUD APIs
 - Study reels loaded from backend with creation, revision-save, and AI quiz generation
+- Revision library for saved reels
+- Real quiz answer selection and score tracking for saved reel revision progress
+- Next-review scheduling based on spaced repetition rules
+- Today&apos;s Revision panel for due review items
+- In-app reminder nudges with per-reel reminder toggles
+- Notification feed for scheduled reminder items
 - Groq-backed study chat panel
 - Study group workspace preview
 - Performance analytics

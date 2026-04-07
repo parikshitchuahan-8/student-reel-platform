@@ -30,7 +30,7 @@ Example files included:
 - Spring Boot APIs for dashboard data and Groq-backed chat
 - Python AI endpoints for study-plan generation, summarization, and reel quizzes
 - Spring Boot proxy endpoints to the Python AI service
-- Reel metadata creation and revision-save flow
+- Reel metadata creation, revision-save flow, saved revision library, quiz progress tracking, next-review scheduling, daily due review surfacing, in-app reminders, and scheduled notification feed
 
 ## Suggested next build order
 
