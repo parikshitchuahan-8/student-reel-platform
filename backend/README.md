@@ -22,6 +22,10 @@ Spring Boot backend for the student productivity platform.
 - `POST /api/tasks`
 - `PUT /api/tasks/{taskId}`
 - `DELETE /api/tasks/{taskId}`
+- `GET /api/reels`
+- `POST /api/reels`
+- `POST /api/reels/quiz`
+- `POST /api/reels/{reelId}/save`
 - `POST /api/chat`
 - `POST /api/ai/study-plan`
 - `POST /api/ai/summarize`
@@ -37,13 +41,36 @@ $env:GROQ_MODEL="llama-3.3-70b-versatile"
 $env:PYTHON_AI_URL="http://localhost:8000"
 ```
 
+Recommended local setup:
+
+- copy [backend/.env.example](C:\XboxGames\GameSave\student-reel-platform\backend\.env.example) into your own local env source
+- do not commit real secrets
+- for deployment, set these values in your server, container platform, or cloud environment settings
+
 ## Seeded login
 
 - Email: `aarav@studentreel.dev`
 - Password: `password123`
+
+## Reels note
+
+- Current reel creation stores metadata and optional URLs
+- Binary file upload/storage is not implemented yet
 
 ## Run
 
 ```powershell
 mvn spring-boot:run
 ```
+
+## Local .env startup
+
+This repo also includes a local-only launcher:
+
+```powershell
+.\start-backend.ps1
+```
+
+It loads values from `backend/.env` before starting Spring Boot.
+
+If your PostgreSQL password is not `postgres`, update `DB_PASSWORD` inside `backend/.env`.

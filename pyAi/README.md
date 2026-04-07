@@ -7,6 +7,7 @@ FastAPI service for AI-heavy workflows that are better isolated from the Spring 
 - `GET /health`
 - `POST /ai/study-plan`
 - `POST /ai/summarize`
+- `POST /ai/reel-quiz`
 
 ## Run
 
@@ -16,6 +17,10 @@ python -m venv .venv
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
+
+## Environment
+
+Use [pyAi/.env.example](C:\XboxGames\GameSave\student-reel-platform\pyAi\.env.example) as the template for local Python AI configuration.
 
 ## Next AI candidates
 
