@@ -86,13 +86,17 @@ public class DataSeeder {
                     "Binary Search in 60 seconds",
                     "DSA",
                     "01:00",
-                    "Spot sorted-array patterns faster"
+                    "Spot sorted-array patterns faster",
+                    "https://example.com/reels/binary-search",
+                    "https://example.com/transcripts/binary-search"
             ));
             studyReelRepository.save(new StudyReel(
                     "Normalization cheatsheet",
                     "DBMS",
                     "01:20",
-                    "Remember 1NF to BCNF quickly"
+                    "Remember 1NF to BCNF quickly",
+                    "https://example.com/reels/normalization",
+                    "https://example.com/transcripts/normalization"
             ));
 
             focusSessionRepository.save(new FocusSession(user, LocalDate.now(), 50));

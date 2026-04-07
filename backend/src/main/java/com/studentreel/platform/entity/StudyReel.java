@@ -27,14 +27,22 @@ public class StudyReel {
     @Column(nullable = false, length = 500)
     private String takeaway;
 
+    @Column(length = 1000)
+    private String videoUrl;
+
+    @Column(length = 1000)
+    private String transcriptUrl;
+
     protected StudyReel() {
     }
 
-    public StudyReel(String title, String subject, String durationLabel, String takeaway) {
+    public StudyReel(String title, String subject, String durationLabel, String takeaway, String videoUrl, String transcriptUrl) {
         this.title = title;
         this.subject = subject;
         this.durationLabel = durationLabel;
         this.takeaway = takeaway;
+        this.videoUrl = videoUrl;
+        this.transcriptUrl = transcriptUrl;
     }
 
     public Long getId() {
@@ -55,5 +63,13 @@ public class StudyReel {
 
     public String getTakeaway() {
         return takeaway;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public String getTranscriptUrl() {
+        return transcriptUrl;
     }
 }
