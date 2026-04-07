@@ -8,6 +8,10 @@ import { ReelsShowcase } from "./sections/ReelsShowcase";
 import { AnalyticsPanel } from "./sections/AnalyticsPanel";
 import { ChatPanel } from "./sections/ChatPanel";
 import { TaskManager } from "./sections/TaskManager";
+import { RevisionLibrary } from "./sections/RevisionLibrary";
+import { TodaysRevision } from "./sections/TodaysRevision";
+import { ReminderPanel } from "./sections/ReminderPanel";
+import { NotificationFeed } from "./sections/NotificationFeed";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -99,7 +103,10 @@ const fallbackQuiz = {
       options: ["Practice a sorted-array problem", "Skip revision", "Ignore edge cases", "Avoid dry runs"],
       answer: "Practice a sorted-array problem"
     }
-  ]
+  ],
+  selectedAnswers: {},
+  submitted: false,
+  score: null
 };
 
 const storedUser = (() => {
@@ -120,9 +127,14 @@ export default function App() {
   const [generatedPlan, setGeneratedPlan] = useState(fallbackGeneratedPlan);
   const [plannerLoading, setPlannerLoading] = useState(false);
   const [reels, setReels] = useState(fallbackDashboard.reels);
+  const [savedReels, setSavedReels] = useState([]);
+  const [dueReels, setDueReels] = useState([]);
   const [quizState, setQuizState] = useState(fallbackQuiz);
   const [quizLoading, setQuizLoading] = useState(null);
   const [saveLoading, setSaveLoading] = useState(null);
+  const [reminderLoading, setReminderLoading] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [readLoading, setReadLoading] = useState(null);
 
   const loadDashboard = async () => {
     const dashboardResponse = await fetch(`${apiBaseUrl}/api/dashboard?userId=${user?.userId}`);
@@ -152,6 +164,27 @@ export default function App() {
     }
   };
 
+  const loadSavedReels = async () => {
+    const savedReelsResponse = await fetch(`${apiBaseUrl}/api/reels/saved?userId=${user?.userId}`);
+    if (savedReelsResponse.ok) {
+      setSavedReels(await savedReelsResponse.json());
+    }
+  };
+
+  const loadDueReels = async () => {
+    const dueReelsResponse = await fetch(`${apiBaseUrl}/api/reels/due?userId=${user?.userId}`);
+    if (dueReelsResponse.ok) {
+      setDueReels(await dueReelsResponse.json());
+    }
+  };
+
+  const loadNotifications = async () => {
+    const notificationsResponse = await fetch(`${apiBaseUrl}/api/reminders?userId=${user?.userId}`);
+    if (notificationsResponse.ok) {
+      setNotifications(await notificationsResponse.json());
+    }
+  };
+
   const refreshData = async () => {
     if (!user?.userId) {
       return;
@@ -159,7 +192,15 @@ export default function App() {
 
     try {
       setTaskLoading(true);
-      await Promise.all([loadDashboard(), loadPlanner(), loadTasks(), loadReels()]);
+      await Promise.all([
+        loadDashboard(),
+        loadPlanner(),
+        loadTasks(),
+        loadReels(),
+        loadSavedReels(),
+        loadDueReels(),
+        loadNotifications()
+      ]);
     } catch (error) {
       console.warn("Using fallback data until backend is running.", error);
     } finally {
@@ -190,14 +231,20 @@ export default function App() {
       setQuizState({
         reelId: reel.id,
         title: data.title,
-        questions: data.questions
+        questions: data.questions,
+        selectedAnswers: {},
+        submitted: false,
+        score: null
       });
     } catch (error) {
       console.warn("Using fallback reel quiz until AI services are running.", error);
       setQuizState({
         ...fallbackQuiz,
         reelId: reel.id,
-        title: reel.title
+        title: reel.title,
+        selectedAnswers: {},
+        submitted: false,
+        score: null
       });
     } finally {
       setQuizLoading(null);
@@ -236,11 +283,113 @@ export default function App() {
       if (!response.ok) {
         throw new Error("Save reel failed");
       }
+
+      await loadSavedReels();
+      await loadDueReels();
     } catch (error) {
       console.warn("Save to revision is unavailable until the backend is running.", error);
     } finally {
       setSaveLoading(null);
     }
+  };
+
+  const recordQuizAttempt = async (reelId, score, totalQuestions) => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/reels/${reelId}/attempt`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userId: user.userId,
+          score,
+          totalQuestions
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Quiz attempt save failed");
+      }
+
+      await loadSavedReels();
+      await loadDueReels();
+    } catch (error) {
+      console.warn("Quiz attempt tracking is unavailable until the backend is running.", error);
+    }
+  };
+
+  const toggleReminder = async (reelId, reminderEnabled) => {
+    try {
+      setReminderLoading(reelId);
+      const response = await fetch(`${apiBaseUrl}/api/reels/${reelId}/reminder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userId: user.userId,
+          reminderEnabled
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Reminder update failed");
+      }
+
+      await loadSavedReels();
+      await loadDueReels();
+    } catch (error) {
+      console.warn("Reminder update is unavailable until the backend is running.", error);
+    } finally {
+      setReminderLoading(null);
+    }
+  };
+
+  const markNotificationRead = async (notificationId) => {
+    try {
+      setReadLoading(notificationId);
+      const response = await fetch(`${apiBaseUrl}/api/reminders/${notificationId}/read`, {
+        method: "POST"
+      });
+
+      if (!response.ok) {
+        throw new Error("Mark read failed");
+      }
+
+      await loadNotifications();
+    } catch (error) {
+      console.warn("Notification updates are unavailable until the backend is running.", error);
+    } finally {
+      setReadLoading(null);
+    }
+  };
+
+  const selectQuizAnswer = (questionIndex, option) => {
+    setQuizState((current) => ({
+      ...current,
+      selectedAnswers: {
+        ...(current?.selectedAnswers || {}),
+        [questionIndex]: option
+      }
+    }));
+  };
+
+  const submitQuizAttempt = async (reelId) => {
+    if (!quizState?.questions?.length) {
+      return;
+    }
+
+    const score = quizState.questions.reduce((total, question, index) => {
+      return total + (quizState.selectedAnswers?.[index] === question.answer ? 1 : 0);
+    }, 0);
+
+    setQuizState((current) => ({
+      ...current,
+      submitted: true,
+      score
+    }));
+
+    await recordQuizAttempt(reelId, score, quizState.questions.length);
   };
 
   useEffect(() => {
@@ -353,6 +502,9 @@ export default function App() {
     setDashboard(fallbackDashboard);
     setGeneratedPlan(fallbackGeneratedPlan);
     setReels(fallbackDashboard.reels);
+    setSavedReels([]);
+    setDueReels([]);
+    setNotifications([]);
     setQuizState(fallbackQuiz);
   };
 
@@ -396,9 +548,31 @@ export default function App() {
           <AnalyticsPanel dashboard={dashboard} />
         </div>
         <div className="mt-6">
+          <TodaysRevision dueReels={dueReels} />
+        </div>
+        <div className="mt-6">
+          <ReminderPanel dueReels={dueReels} />
+        </div>
+        <div className="mt-6">
+          <NotificationFeed
+            notifications={notifications}
+            onMarkRead={markNotificationRead}
+            readLoading={readLoading}
+          />
+        </div>
+        <div className="mt-6">
+          <RevisionLibrary
+            onToggleReminder={toggleReminder}
+            reminderLoading={reminderLoading}
+            savedReels={savedReels}
+          />
+        </div>
+        <div className="mt-6">
           <ReelsShowcase
             onCreateReel={createReel}
             onGenerateQuiz={generateReelQuiz}
+            onSelectAnswer={selectQuizAnswer}
+            onSubmitQuiz={submitQuizAttempt}
             onSaveReel={saveReel}
             quizLoading={quizLoading}
             quizState={quizState}

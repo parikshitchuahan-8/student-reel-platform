@@ -13,6 +13,8 @@ export function ReelsShowcase({
   reels,
   onCreateReel,
   onGenerateQuiz,
+  onSelectAnswer,
+  onSubmitQuiz,
   onSaveReel,
   quizState,
   quizLoading,
@@ -92,16 +94,39 @@ export function ReelsShowcase({
                     <p className="font-medium">{index + 1}. {question.question}</p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {question.options.map((option) => (
-                        <span key={option} className="rounded-full bg-black/20 px-3 py-1 text-xs">
+                        <button
+                          key={option}
+                          className={`rounded-full px-3 py-1 text-xs ${
+                            quizState.selectedAnswers?.[index] === option
+                              ? "bg-[#ffd48f] text-ink"
+                              : "bg-black/20 text-white"
+                          }`}
+                          onClick={() => onSelectAnswer(index, option)}
+                          type="button"
+                        >
                           {option}
-                        </span>
+                        </button>
                       ))}
                     </div>
-                    <p className="mt-2 text-xs uppercase tracking-[0.2em] text-[#ffd48f]">
-                      Answer: {question.answer}
-                    </p>
+                    {quizState.submitted ? (
+                      <p className="mt-2 text-xs uppercase tracking-[0.2em] text-[#ffd48f]">
+                        Answer: {question.answer}
+                      </p>
+                    ) : null}
                   </div>
                 ))}
+                <button
+                  className="rounded-full bg-[#ffd48f] px-4 py-2 text-xs font-medium text-ink"
+                  onClick={() => onSubmitQuiz(reel.id)}
+                  type="button"
+                >
+                  Submit quiz
+                </button>
+                {quizState.submitted ? (
+                  <div className="text-sm text-white/90">
+                    Score: {quizState.score}/{quizState.questions.length}
+                  </div>
+                ) : null}
               </div>
             ) : null}
           </article>
