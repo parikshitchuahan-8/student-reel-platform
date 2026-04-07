@@ -23,9 +23,15 @@ Spring Boot backend for the student productivity platform.
 - `PUT /api/tasks/{taskId}`
 - `DELETE /api/tasks/{taskId}`
 - `GET /api/reels`
+- `GET /api/reels/saved?userId=1`
+- `GET /api/reels/due?userId=1`
 - `POST /api/reels`
 - `POST /api/reels/quiz`
 - `POST /api/reels/{reelId}/save`
+- `POST /api/reels/{reelId}/attempt`
+- `POST /api/reels/{reelId}/reminder`
+- `GET /api/reminders?userId=1`
+- `POST /api/reminders/{notificationId}/read`
 - `POST /api/chat`
 - `POST /api/ai/study-plan`
 - `POST /api/ai/summarize`
@@ -56,6 +62,9 @@ Recommended local setup:
 
 - Current reel creation stores metadata and optional URLs
 - Binary file upload/storage is not implemented yet
+- Saved reels now track next review dates based on quiz performance
+- Saved reels can also enable or disable reminder nudges
+- A scheduled reminder job can create in-app notifications for due saved reels
 
 ## Run
 
