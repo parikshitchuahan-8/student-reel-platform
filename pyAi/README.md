@@ -22,6 +22,10 @@ uvicorn app.main:app --reload --port 8000
 
 Use [pyAi/.env.example](C:\XboxGames\GameSave\student-reel-platform\pyAi\.env.example) as the template for local Python AI configuration.
 
+## Render
+
+The Python AI service is configured for Render native Python deployment in [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml).
+
 ## Next AI candidates
 
 - quiz generation from notes or reels

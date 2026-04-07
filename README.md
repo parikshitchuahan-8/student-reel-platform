@@ -89,3 +89,56 @@ Deployment rule:
 
 - frontend public config goes in frontend env variables
 - backend and AI secrets should be set in the deployment platform, not committed to the repo
+
+## Deployment Layout
+
+Recommended production split:
+
+- Vercel: `frontend`
+- Render web service: `backend`
+- Render web service: `pyAi`
+- Render Postgres: `student_reel`
+
+Deployment files included:
+
+- [frontend/vercel.json](C:\XboxGames\GameSave\student-reel-platform\frontend\vercel.json)
+- [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml)
+- [backend/Dockerfile](C:\XboxGames\GameSave\student-reel-platform\backend\Dockerfile)
+
+## Deploy on Vercel and Render
+
+### 1. Deploy the backend stack on Render
+
+Use the Blueprint in [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml). It creates:
+
+- `student-reel-db` PostgreSQL
+- `student-reel-ai` FastAPI service
+- `student-reel-backend` Spring Boot service
+
+Important Render environment variables:
+
+- `GROQ_API_KEY`: add your Groq key manually in Render
+- `CORS_ALLOWED_ORIGINS`: set this to your Vercel frontend URLs, for example `https://student-reel-platform.vercel.app,https://*.vercel.app`
+
+Render-specific notes:
+
+- the backend Docker entrypoint converts Render's `postgresql://...` database URL into the JDBC URL Spring Boot expects
+- the backend also normalizes Render private-network host values for `PYTHON_AI_URL`
+- backend health check path is `/api/health`
+- Python AI health check path is `/health`
+
+### 2. Deploy the frontend on Vercel
+
+Create a Vercel project with [frontend](C:\XboxGames\GameSave\student-reel-platform\frontend) as the root directory.
+
+Use:
+
+- framework preset: `Vite`
+- build command: `npm run build`
+- output directory: `dist`
+
+Set this Vercel environment variable:
+
+- `VITE_API_BASE_URL=https://your-backend-name.onrender.com`
+
+After Vercel gives you the real frontend URL, add that URL back into Render as `CORS_ALLOWED_ORIGINS` and redeploy the backend.

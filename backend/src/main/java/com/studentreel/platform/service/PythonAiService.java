@@ -18,8 +18,15 @@ public class PythonAiService {
 
     public PythonAiService(@Value("${app.python-ai.base-url}") String pythonAiBaseUrl) {
         this.restClient = RestClient.builder()
-                .baseUrl(pythonAiBaseUrl)
+                .baseUrl(normalizeBaseUrl(pythonAiBaseUrl))
                 .build();
+    }
+
+    private String normalizeBaseUrl(String pythonAiBaseUrl) {
+        if (pythonAiBaseUrl.startsWith("http://") || pythonAiBaseUrl.startsWith("https://")) {
+            return pythonAiBaseUrl;
+        }
+        return "http://" + pythonAiBaseUrl;
     }
 
     public Map<String, Object> generateStudyPlan(StudyPlanRequest request) {

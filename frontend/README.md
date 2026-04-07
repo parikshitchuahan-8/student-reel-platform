@@ -42,3 +42,17 @@ VITE_API_BASE_URL=http://localhost:8080
 ```
 
 Use deployment environment variables for hosted environments instead of committing real values.
+
+## Vercel
+
+Deploy the `frontend` directory as the Vercel project root.
+
+- Framework preset: `Vite`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Environment variable:
+  - `VITE_API_BASE_URL=https://your-backend-service.onrender.com`
+
+SPA rewrites are configured in [frontend/vercel.json](C:\XboxGames\GameSave\student-reel-platform\frontend\vercel.json).
+
+After Vercel gives you the real frontend URL, add that URL into Render as `CORS_ALLOWED_ORIGINS` so the Spring Boot API accepts browser requests from your deployed frontend.

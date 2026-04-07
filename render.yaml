@@ -1,0 +1,50 @@
+services:
+  - type: web
+    name: student-reel-backend
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: DB_URL
+        fromDatabase:
+          name: student-reel-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: student-reel-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: student-reel-db
+          property: password
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: PYTHON_AI_URL
+        fromService:
+          type: web
+          name: student-reel-ai
+          property: hostport
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: REMINDER_EMAIL_ENABLED
+        value: "false"
+
+  - type: web
+    name: student-reel-ai
+    runtime: python
+    plan: free
+    rootDir: pyAi
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+
+databases:
+  - name: student-reel-db
+    plan: free
+    databaseName: student_reel
+    postgresMajorVersion: "17"

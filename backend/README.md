@@ -45,6 +45,7 @@ $env:DB_PASSWORD="postgres"
 $env:GROQ_API_KEY="your-groq-key"
 $env:GROQ_MODEL="llama-3.3-70b-versatile"
 $env:PYTHON_AI_URL="http://localhost:8000"
+$env:CORS_ALLOWED_ORIGINS="http://localhost:5173,http://localhost:4173"
 ```
 
 Recommended local setup:
@@ -83,3 +84,21 @@ This repo also includes a local-only launcher:
 It loads values from `backend/.env` before starting Spring Boot.
 
 If your PostgreSQL password is not `postgres`, update `DB_PASSWORD` inside `backend/.env`.
+
+## Render
+
+The backend is configured for Docker-based deployment on Render because Render recommends Docker for JVM services.
+
+- Dockerfile: [backend/Dockerfile](C:\XboxGames\GameSave\student-reel-platform\backend\Dockerfile)
+- Entrypoint: [backend/docker-entrypoint.sh](C:\XboxGames\GameSave\student-reel-platform\backend\docker-entrypoint.sh)
+- Health endpoint: [HealthController.java](C:\XboxGames\GameSave\student-reel-platform\backend\src\main\java\com\studentreel\platform\controller\HealthController.java)
+- Blueprint: [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml)
+
+Render environment setup:
+
+- `GROQ_API_KEY`: set manually in Render
+- `CORS_ALLOWED_ORIGINS`: set to your Vercel deployment URLs
+- `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`: populated from the Render Postgres database by the Blueprint
+- `PYTHON_AI_URL`: populated from the Render Python AI service by the Blueprint
+
+The Docker entrypoint converts Render's Postgres connection string into the JDBC URL Spring Boot expects before startup.
