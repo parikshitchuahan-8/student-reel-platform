@@ -1,4 +1,42 @@
-export function ReelsShowcase({ reels }) {
+import { useState } from "react";
+
+const initialReelForm = {
+  title: "",
+  subject: "",
+  duration: "",
+  takeaway: "",
+  videoUrl: "",
+  transcriptUrl: ""
+};
+
+export function ReelsShowcase({
+  reels,
+  onCreateReel,
+  onGenerateQuiz,
+  onSaveReel,
+  quizState,
+  quizLoading,
+  saveLoading
+}) {
+  const [form, setForm] = useState(initialReelForm);
+  const [creating, setCreating] = useState(false);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setCreating(true);
+    try {
+      await onCreateReel(form);
+      setForm(initialReelForm);
+    } finally {
+      setCreating(false);
+    }
+  };
+
   return (
     <section className="rounded-[32px] bg-[#f0dcc8] p-6 shadow-float">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
@@ -21,12 +59,109 @@ export function ReelsShowcase({ reels }) {
             <p className="mt-3 text-sm text-white/75">{reel.takeaway}</p>
             <div className="mt-6 flex flex-wrap gap-2 text-xs">
               <span className="rounded-full bg-white/10 px-3 py-2">AI summary</span>
-              <span className="rounded-full bg-white/10 px-3 py-2">Quick quiz</span>
-              <span className="rounded-full bg-white/10 px-3 py-2">Add to revision</span>
+              <button
+                className="rounded-full bg-white/10 px-3 py-2 text-xs text-white"
+                onClick={() => onGenerateQuiz(reel)}
+                type="button"
+              >
+                {quizLoading === reel.id ? "Loading quiz..." : "Quick quiz"}
+              </button>
+              <button
+                className="rounded-full bg-white/10 px-3 py-2 text-xs text-white"
+                onClick={() => onSaveReel(reel.id)}
+                type="button"
+              >
+                {saveLoading === reel.id ? "Saving..." : "Add to revision"}
+              </button>
             </div>
+            {reel.videoUrl ? (
+              <a className="mt-4 inline-block text-sm text-[#ffd48f]" href={reel.videoUrl} rel="noreferrer" target="_blank">
+                Open reel link
+              </a>
+            ) : null}
+            {reel.transcriptUrl ? (
+              <a className="mt-2 block text-sm text-white/70" href={reel.transcriptUrl} rel="noreferrer" target="_blank">
+                Open transcript
+              </a>
+            ) : null}
+            {quizState?.reelId === reel.id ? (
+              <div className="mt-5 space-y-3 rounded-[22px] bg-white/10 p-4">
+                <p className="text-sm font-semibold text-white/90">Quiz for {quizState.title}</p>
+                {quizState.questions.map((question, index) => (
+                  <div key={`${reel.id}-${index}`} className="rounded-[18px] bg-white/10 p-3 text-sm">
+                    <p className="font-medium">{index + 1}. {question.question}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {question.options.map((option) => (
+                        <span key={option} className="rounded-full bg-black/20 px-3 py-1 text-xs">
+                          {option}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs uppercase tracking-[0.2em] text-[#ffd48f]">
+                      Answer: {question.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </article>
         ))}
       </div>
+      <form className="mt-8 grid gap-3 rounded-[28px] bg-white/50 p-5 md:grid-cols-2" onSubmit={handleSubmit}>
+        <input
+          className="rounded-[18px] border border-black/10 bg-white px-4 py-3 outline-none"
+          name="title"
+          onChange={handleChange}
+          placeholder="Reel title"
+          required
+          value={form.title}
+        />
+        <input
+          className="rounded-[18px] border border-black/10 bg-white px-4 py-3 outline-none"
+          name="subject"
+          onChange={handleChange}
+          placeholder="Subject"
+          required
+          value={form.subject}
+        />
+        <input
+          className="rounded-[18px] border border-black/10 bg-white px-4 py-3 outline-none"
+          name="duration"
+          onChange={handleChange}
+          placeholder="Duration label, e.g. 01:10"
+          required
+          value={form.duration}
+        />
+        <input
+          className="rounded-[18px] border border-black/10 bg-white px-4 py-3 outline-none"
+          name="takeaway"
+          onChange={handleChange}
+          placeholder="Learning takeaway"
+          required
+          value={form.takeaway}
+        />
+        <input
+          className="rounded-[18px] border border-black/10 bg-white px-4 py-3 outline-none"
+          name="videoUrl"
+          onChange={handleChange}
+          placeholder="Optional reel URL"
+          value={form.videoUrl}
+        />
+        <input
+          className="rounded-[18px] border border-black/10 bg-white px-4 py-3 outline-none"
+          name="transcriptUrl"
+          onChange={handleChange}
+          placeholder="Optional transcript URL"
+          value={form.transcriptUrl}
+        />
+        <button
+          className="rounded-full bg-coral px-5 py-3 font-medium text-white md:col-span-2"
+          disabled={creating}
+          type="submit"
+        >
+          {creating ? "Creating reel..." : "Add study reel"}
+        </button>
+      </form>
     </section>
   );
 }
