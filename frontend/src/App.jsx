@@ -9,6 +9,8 @@ import { AnalyticsPanel } from "./sections/AnalyticsPanel";
 import { ChatPanel } from "./sections/ChatPanel";
 import { TaskManager } from "./sections/TaskManager";
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 const fallbackDashboard = {
   studentName: "Aarav",
   tasksDueToday: 4,
@@ -83,6 +85,23 @@ const fallbackTasks = [
   }
 ];
 
+const fallbackQuiz = {
+  reelId: 1,
+  title: "Binary Search in 60 seconds",
+  questions: [
+    {
+      question: "What is the main pattern binary search depends on?",
+      options: ["Sorted data", "Random scanning", "Hash collisions", "Graph traversal"],
+      answer: "Sorted data"
+    },
+    {
+      question: "What is the best next action after watching the reel?",
+      options: ["Practice a sorted-array problem", "Skip revision", "Ignore edge cases", "Avoid dry runs"],
+      answer: "Practice a sorted-array problem"
+    }
+  ]
+};
+
 const storedUser = (() => {
   try {
     const raw = localStorage.getItem("student-reel-user");
@@ -100,25 +119,36 @@ export default function App() {
   const [taskLoading, setTaskLoading] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState(fallbackGeneratedPlan);
   const [plannerLoading, setPlannerLoading] = useState(false);
+  const [reels, setReels] = useState(fallbackDashboard.reels);
+  const [quizState, setQuizState] = useState(fallbackQuiz);
+  const [quizLoading, setQuizLoading] = useState(null);
+  const [saveLoading, setSaveLoading] = useState(null);
 
   const loadDashboard = async () => {
-    const dashboardResponse = await fetch(`http://localhost:8080/api/dashboard?userId=${user?.userId}`);
+    const dashboardResponse = await fetch(`${apiBaseUrl}/api/dashboard?userId=${user?.userId}`);
     if (dashboardResponse.ok) {
       setDashboard(await dashboardResponse.json());
     }
   };
 
   const loadPlanner = async () => {
-    const plannerResponse = await fetch("http://localhost:8080/api/dashboard/planner");
+    const plannerResponse = await fetch(`${apiBaseUrl}/api/dashboard/planner`);
     if (plannerResponse.ok) {
       setPlanner(await plannerResponse.json());
     }
   };
 
   const loadTasks = async () => {
-    const tasksResponse = await fetch(`http://localhost:8080/api/tasks?userId=${user?.userId}`);
+    const tasksResponse = await fetch(`${apiBaseUrl}/api/tasks?userId=${user?.userId}`);
     if (tasksResponse.ok) {
       setTasks(await tasksResponse.json());
+    }
+  };
+
+  const loadReels = async () => {
+    const reelsResponse = await fetch(`${apiBaseUrl}/api/reels`);
+    if (reelsResponse.ok) {
+      setReels(await reelsResponse.json());
     }
   };
 
@@ -129,11 +159,87 @@ export default function App() {
 
     try {
       setTaskLoading(true);
-      await Promise.all([loadDashboard(), loadPlanner(), loadTasks()]);
+      await Promise.all([loadDashboard(), loadPlanner(), loadTasks(), loadReels()]);
     } catch (error) {
       console.warn("Using fallback data until backend is running.", error);
     } finally {
       setTaskLoading(false);
+    }
+  };
+
+  const generateReelQuiz = async (reel) => {
+    try {
+      setQuizLoading(reel.id);
+      const response = await fetch(`${apiBaseUrl}/api/reels/quiz`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: reel.title,
+          subject: reel.subject,
+          takeaway: reel.takeaway
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Quiz generation failed");
+      }
+
+      const data = await response.json();
+      setQuizState({
+        reelId: reel.id,
+        title: data.title,
+        questions: data.questions
+      });
+    } catch (error) {
+      console.warn("Using fallback reel quiz until AI services are running.", error);
+      setQuizState({
+        ...fallbackQuiz,
+        reelId: reel.id,
+        title: reel.title
+      });
+    } finally {
+      setQuizLoading(null);
+    }
+  };
+
+  const createReel = async (reel) => {
+    const response = await fetch(`${apiBaseUrl}/api/reels`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(reel)
+    });
+
+    if (!response.ok) {
+      throw new Error("Reel creation failed");
+    }
+
+    await refreshData();
+  };
+
+  const saveReel = async (reelId) => {
+    try {
+      setSaveLoading(reelId);
+      const response = await fetch(`${apiBaseUrl}/api/reels/${reelId}/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userId: user.userId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Save reel failed");
+      }
+    } catch (error) {
+      console.warn("Save to revision is unavailable until the backend is running.", error);
+    } finally {
+      setSaveLoading(null);
     }
   };
 
@@ -144,7 +250,7 @@ export default function App() {
   }, [user]);
 
   const createTask = async (task) => {
-    const response = await fetch("http://localhost:8080/api/tasks", {
+    const response = await fetch(`${apiBaseUrl}/api/tasks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -163,7 +269,7 @@ export default function App() {
   };
 
   const updateTask = async (taskId, task) => {
-    const response = await fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+    const response = await fetch(`${apiBaseUrl}/api/tasks/${taskId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -188,7 +294,7 @@ export default function App() {
   };
 
   const deleteTask = async (taskId) => {
-    const response = await fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+    const response = await fetch(`${apiBaseUrl}/api/tasks/${taskId}`, {
       method: "DELETE"
     });
 
@@ -202,7 +308,7 @@ export default function App() {
   const generatePlan = async (planInput) => {
     try {
       setPlannerLoading(true);
-      const response = await fetch("http://localhost:8080/api/ai/study-plan", {
+      const response = await fetch(`${apiBaseUrl}/api/ai/study-plan`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -246,6 +352,8 @@ export default function App() {
     setTasks(fallbackTasks);
     setDashboard(fallbackDashboard);
     setGeneratedPlan(fallbackGeneratedPlan);
+    setReels(fallbackDashboard.reels);
+    setQuizState(fallbackQuiz);
   };
 
   if (!user) {
@@ -288,7 +396,15 @@ export default function App() {
           <AnalyticsPanel dashboard={dashboard} />
         </div>
         <div className="mt-6">
-          <ReelsShowcase reels={dashboard.reels} />
+          <ReelsShowcase
+            onCreateReel={createReel}
+            onGenerateQuiz={generateReelQuiz}
+            onSaveReel={saveReel}
+            quizLoading={quizLoading}
+            quizState={quizState}
+            reels={reels}
+            saveLoading={saveLoading}
+          />
         </div>
       </div>
     </div>

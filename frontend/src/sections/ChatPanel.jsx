@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 const fallbackReply = "Backend not running yet, but this chat box is ready for Groq via Spring AI.";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export function ChatPanel() {
   const [message, setMessage] = useState("");
@@ -17,7 +18,7 @@ export function ChatPanel() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8080/api/chat", {
+      const response = await fetch(`${apiBaseUrl}/api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
