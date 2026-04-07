@@ -38,7 +38,7 @@ export function AuthPanel({ onAuthSuccess }) {
       const endpoint = mode === "login" ? "login" : "register";
       const payload = mode === "login" ? loginForm : registerForm;
 
-      const response = await fetch(`http://localhost:8080/api/auth/${endpoint}`, {
+      const response = await fetch(`import.meta.env.VITE_API_BASE_URL/api/auth/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
