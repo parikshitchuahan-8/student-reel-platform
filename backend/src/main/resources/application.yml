@@ -27,3 +27,6 @@ spring:
 app:
   python-ai:
     base-url: ${PYTHON_AI_URL:http://localhost:8000}
+  reminders:
+    cron: ${REMINDER_CRON:0 0 8 * * *}
+    email-enabled: ${REMINDER_EMAIL_ENABLED:false}
