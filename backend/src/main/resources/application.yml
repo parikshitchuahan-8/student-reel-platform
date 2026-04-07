@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: student-reel-platform
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/student_reel}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  ai:
+    openai:
+      api-key: ${GROQ_API_KEY:}
+      base-url: https://api.groq.com/openai
+      chat:
+        options:
+          model: ${GROQ_MODEL:llama-3.3-70b-versatile}
+          temperature: 0.4
+
+app:
+  python-ai:
+    base-url: ${PYTHON_AI_URL:http://localhost:8000}
