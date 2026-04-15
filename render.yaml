@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: student-reel-backend
+    name: study-orbit-backend
     runtime: docker
     plan: free
     rootDir: backend
@@ -10,15 +10,15 @@ services:
     envVars:
       - key: DB_URL
         fromDatabase:
-          name: student-reel-db
+          name: study-orbit-db
           property: connectionString
       - key: DB_USERNAME
         fromDatabase:
-          name: student-reel-db
+          name: study-orbit-db
           property: user
       - key: DB_PASSWORD
         fromDatabase:
-          name: student-reel-db
+          name: study-orbit-db
           property: password
       - key: GROQ_API_KEY
         sync: false
@@ -27,7 +27,7 @@ services:
       - key: PYTHON_AI_URL
         fromService:
           type: web
-          name: student-reel-ai
+          name: study-orbit-ai
           property: hostport
       - key: CORS_ALLOWED_ORIGINS
         sync: false
@@ -35,7 +35,7 @@ services:
         value: "false"
 
   - type: web
-    name: student-reel-ai
+    name: study-orbit-ai
     runtime: python
     plan: free
     rootDir: pyAi
@@ -44,7 +44,7 @@ services:
     healthCheckPath: /health
 
 databases:
-  - name: student-reel-db
+  - name: study-orbit-db
     plan: free
-    databaseName: student_reel
+    databaseName: study_orbit
     postgresMajorVersion: "17"

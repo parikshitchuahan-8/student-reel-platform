@@ -1,4 +1,4 @@
-# Student Reel Platform Frontend
+# study-orbit Frontend
 
 React + Tailwind frontend for the student productivity platform.
 
@@ -35,7 +35,7 @@ npm run dev
 
 ## Environment
 
-Create a local `frontend/.env` from [frontend/.env.example](C:\XboxGames\GameSave\student-reel-platform\frontend\.env.example):
+Create a local `frontend/.env` from [frontend/.env.example](C:\XboxGames\GameSave\study-orbit\frontend\.env.example):
 
 ```env
 VITE_API_BASE_URL=http://localhost:8080
@@ -53,6 +53,6 @@ Deploy the `frontend` directory as the Vercel project root.
 - Environment variable:
   - `VITE_API_BASE_URL=https://your-backend-service.onrender.com`
 
-SPA rewrites are configured in [frontend/vercel.json](C:\XboxGames\GameSave\student-reel-platform\frontend\vercel.json).
+SPA rewrites are configured in [frontend/vercel.json](C:\XboxGames\GameSave\study-orbit\frontend\vercel.json).
 
 After Vercel gives you the real frontend URL, add that URL into Render as `CORS_ALLOWED_ORIGINS` so the Spring Boot API accepts browser requests from your deployed frontend.

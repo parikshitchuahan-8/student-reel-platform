@@ -1,6 +1,6 @@
-# Student Reel Platform
+# study-orbit
 
-Student productivity and collaboration platform for academic planning, study groups, focus tracking, and academic-only study reels.
+`study-orbit` is a student productivity and collaboration platform for academic planning, study groups, focus tracking, and AI-assisted study reels.
 
 ## Stack
 
@@ -19,9 +19,9 @@ Best practice used in this repo:
 
 Example files included:
 
-- [frontend/.env.example](C:\XboxGames\GameSave\student-reel-platform\frontend\.env.example)
-- [backend/.env.example](C:\XboxGames\GameSave\student-reel-platform\backend\.env.example)
-- [pyAi/.env.example](C:\XboxGames\GameSave\student-reel-platform\pyAi\.env.example)
+- [frontend/.env.example](C:\XboxGames\GameSave\study-orbit\frontend\.env.example)
+- [backend/.env.example](C:\XboxGames\GameSave\study-orbit\backend\.env.example)
+- [pyAi/.env.example](C:\XboxGames\GameSave\study-orbit\pyAi\.env.example)
 
 ## Current scaffold
 
@@ -46,7 +46,7 @@ Example files included:
 ### 1. Python AI service
 
 ```powershell
-cd C:\XboxGames\GameSave\student-reel-platform\pyAi
+cd C:\XboxGames\GameSave\study-orbit\pyAi
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
@@ -56,8 +56,8 @@ uvicorn app.main:app --reload --port 8000
 ### 2. Spring Boot backend
 
 ```powershell
-cd C:\XboxGames\GameSave\student-reel-platform\backend
-$env:DB_URL="jdbc:postgresql://localhost:5432/student_reel"
+cd C:\XboxGames\GameSave\study-orbit\backend
+$env:DB_URL="jdbc:postgresql://localhost:5432/study_orbit"
 $env:DB_USERNAME="postgres"
 $env:DB_PASSWORD="your_postgres_password"
 $env:GROQ_API_KEY="your-groq-key"
@@ -68,13 +68,13 @@ $env:PYTHON_AI_URL="http://localhost:8000"
 
 Seeded login after first boot:
 
-- Email: `aarav@studentreel.dev`
+- Email: `aarav@studyorbit.dev`
 - Password: `password123`
 
 ### 3. React frontend
 
 ```powershell
-cd C:\XboxGames\GameSave\student-reel-platform\frontend
+cd C:\XboxGames\GameSave\study-orbit\frontend
 npm install
 npm run dev
 ```
@@ -97,28 +97,28 @@ Recommended production split:
 - Vercel: `frontend`
 - Render web service: `backend`
 - Render web service: `pyAi`
-- Render Postgres: `student_reel`
+- Render Postgres: `study_orbit`
 
 Deployment files included:
 
-- [frontend/vercel.json](C:\XboxGames\GameSave\student-reel-platform\frontend\vercel.json)
-- [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml)
-- [backend/Dockerfile](C:\XboxGames\GameSave\student-reel-platform\backend\Dockerfile)
+- [frontend/vercel.json](C:\XboxGames\GameSave\study-orbit\frontend\vercel.json)
+- [render.yaml](C:\XboxGames\GameSave\study-orbit\render.yaml)
+- [backend/Dockerfile](C:\XboxGames\GameSave\study-orbit\backend\Dockerfile)
 
 ## Deploy on Vercel and Render
 
 ### 1. Deploy the backend stack on Render
 
-Use the Blueprint in [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml). It creates:
+Use the Blueprint in [render.yaml](C:\XboxGames\GameSave\study-orbit\render.yaml). It creates:
 
-- `student-reel-db` PostgreSQL
-- `student-reel-ai` FastAPI service
-- `student-reel-backend` Spring Boot service
+- `study-orbit-db` PostgreSQL
+- `study-orbit-ai` FastAPI service
+- `study-orbit-backend` Spring Boot service
 
 Important Render environment variables:
 
 - `GROQ_API_KEY`: add your Groq key manually in Render
-- `CORS_ALLOWED_ORIGINS`: set this to your Vercel frontend URLs, for example `https://student-reel-platform.vercel.app,https://*.vercel.app`
+- `CORS_ALLOWED_ORIGINS`: set this to your Vercel frontend URLs, for example `https://study-orbit.vercel.app,https://*.vercel.app`
 
 Render-specific notes:
 
@@ -129,7 +129,7 @@ Render-specific notes:
 
 ### 2. Deploy the frontend on Vercel
 
-Create a Vercel project with [frontend](C:\XboxGames\GameSave\student-reel-platform\frontend) as the root directory.
+Create a Vercel project with [frontend](C:\XboxGames\GameSave\study-orbit\frontend) as the root directory.
 
 Use:
 

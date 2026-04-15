@@ -3,9 +3,9 @@ server:
 
 spring:
   application:
-    name: student-reel-platform
+    name: study-orbit
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/student_reel}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/study_orbit}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
   jpa:

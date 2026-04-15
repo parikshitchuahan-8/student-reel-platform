@@ -39,7 +39,7 @@ public class DataSeeder {
             UserProfile user = userProfileRepository.save(
                     new UserProfile(
                             "Aarav Sharma",
-                            "aarav@studentreel.dev",
+                            "aarav@studyorbit.dev",
                             "Computer Science",
                             12,
                             passwordEncoder.encode("password123")

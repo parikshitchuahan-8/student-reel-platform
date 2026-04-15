@@ -1,4 +1,4 @@
-# Student Reel AI Service
+# study-orbit AI Service
 
 FastAPI service for AI-heavy workflows that are better isolated from the Spring Boot app.
 
@@ -20,11 +20,11 @@ uvicorn app.main:app --reload --port 8000
 
 ## Environment
 
-Use [pyAi/.env.example](C:\XboxGames\GameSave\student-reel-platform\pyAi\.env.example) as the template for local Python AI configuration.
+Use [pyAi/.env.example](C:\XboxGames\GameSave\study-orbit\pyAi\.env.example) as the template for local Python AI configuration.
 
 ## Render
 
-The Python AI service is configured for Render native Python deployment in [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml).
+The Python AI service is configured for Render native Python deployment in [render.yaml](C:\XboxGames\GameSave\study-orbit\render.yaml).
 
 ## Next AI candidates
 

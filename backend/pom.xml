@@ -10,11 +10,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.studentreel</groupId>
-    <artifactId>student-reel-platform</artifactId>
+    <groupId>com.studyorbit</groupId>
+    <artifactId>study-orbit</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>student-reel-platform</name>
-    <description>Student productivity and collaboration platform backend</description>
+    <name>study-orbit</name>
+    <description>study-orbit student productivity platform backend</description>
 
     <properties>
         <java.version>17</java.version>

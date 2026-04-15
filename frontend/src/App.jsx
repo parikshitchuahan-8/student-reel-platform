@@ -111,7 +111,7 @@ const fallbackQuiz = {
 
 const storedUser = (() => {
   try {
-    const raw = localStorage.getItem("student-reel-user");
+    const raw = localStorage.getItem("study-orbit-user");
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -492,12 +492,12 @@ export default function App() {
 
   const handleAuthSuccess = (authUser) => {
     setUser(authUser);
-    localStorage.setItem("student-reel-user", JSON.stringify(authUser));
+    localStorage.setItem("study-orbit-user", JSON.stringify(authUser));
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem("student-reel-user");
+    localStorage.removeItem("study-orbit-user");
     setTasks(fallbackTasks);
     setDashboard(fallbackDashboard);
     setGeneratedPlan(fallbackGeneratedPlan);

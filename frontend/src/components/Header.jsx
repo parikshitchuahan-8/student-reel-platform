@@ -3,7 +3,7 @@ export function Header({ user, onLogout }) {
     <header className="rounded-[28px] border border-black/5 bg-panel/90 px-5 py-4 shadow-float backdrop-blur">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="font-display text-sm uppercase tracking-[0.3em] text-moss">Student Reel Platform</p>
+          <p className="font-display text-sm uppercase tracking-[0.3em] text-moss">study-orbit</p>
           <h1 className="mt-1 font-display text-3xl font-bold">Build consistency, not noise.</h1>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-sm">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const loginInitial = {
-  email: "aarav@studentreel.dev",
+  email: "aarav@studyorbit.dev",
   password: "password123"
 };
 
@@ -133,7 +133,7 @@ export function AuthPanel({ onAuthSuccess }) {
       </form>
       <div className="mt-4 rounded-[22px] bg-[#f5efe4] px-4 py-3 text-sm text-ink/70">{message}</div>
       <div className="mt-4 rounded-[22px] bg-[#efe4d0] px-4 py-3 text-sm text-ink/75">
-        Seeded login: `aarav@studentreel.dev` / `password123`
+        Seeded login: `aarav@studyorbit.dev` / `password123`
       </div>
     </section>
   );

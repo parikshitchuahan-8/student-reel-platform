@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 
 app = FastAPI(
-    title="Student Reel AI Service",
+    title="study-orbit AI Service",
     description="Python microservice for study planning, summaries, and future AI workflows.",
     version="0.0.1",
 )

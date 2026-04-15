@@ -1,4 +1,4 @@
-# Student Reel Platform Backend
+# study-orbit Backend
 
 Spring Boot backend for the student productivity platform.
 
@@ -39,7 +39,7 @@ Spring Boot backend for the student productivity platform.
 ## Environment variables
 
 ```powershell
-$env:DB_URL="jdbc:postgresql://localhost:5432/student_reel"
+$env:DB_URL="jdbc:postgresql://localhost:5432/study_orbit"
 $env:DB_USERNAME="postgres"
 $env:DB_PASSWORD="postgres"
 $env:GROQ_API_KEY="your-groq-key"
@@ -50,13 +50,13 @@ $env:CORS_ALLOWED_ORIGINS="http://localhost:5173,http://localhost:4173"
 
 Recommended local setup:
 
-- copy [backend/.env.example](C:\XboxGames\GameSave\student-reel-platform\backend\.env.example) into your own local env source
+- copy [backend/.env.example](C:\XboxGames\GameSave\study-orbit\backend\.env.example) into your own local env source
 - do not commit real secrets
 - for deployment, set these values in your server, container platform, or cloud environment settings
 
 ## Seeded login
 
-- Email: `aarav@studentreel.dev`
+- Email: `aarav@studyorbit.dev`
 - Password: `password123`
 
 ## Reels note
@@ -89,10 +89,10 @@ If your PostgreSQL password is not `postgres`, update `DB_PASSWORD` inside `back
 
 The backend is configured for Docker-based deployment on Render because Render recommends Docker for JVM services.
 
-- Dockerfile: [backend/Dockerfile](C:\XboxGames\GameSave\student-reel-platform\backend\Dockerfile)
-- Entrypoint: [backend/docker-entrypoint.sh](C:\XboxGames\GameSave\student-reel-platform\backend\docker-entrypoint.sh)
-- Health endpoint: [HealthController.java](C:\XboxGames\GameSave\student-reel-platform\backend\src\main\java\com\studentreel\platform\controller\HealthController.java)
-- Blueprint: [render.yaml](C:\XboxGames\GameSave\student-reel-platform\render.yaml)
+- Dockerfile: [backend/Dockerfile](C:\XboxGames\GameSave\study-orbit\backend\Dockerfile)
+- Entrypoint: [backend/docker-entrypoint.sh](C:\XboxGames\GameSave\study-orbit\backend\docker-entrypoint.sh)
+- Health endpoint: [HealthController.java](C:\XboxGames\GameSave\study-orbit\backend\src\main\java\com\studentreel\platform\controller\HealthController.java)
+- Blueprint: [render.yaml](C:\XboxGames\GameSave\study-orbit\render.yaml)
 
 Render environment setup:
 
